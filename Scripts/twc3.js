@@ -374,13 +374,17 @@ var GetClosestCurrentWeather = function (WeatherParameters, Distance)
     var lon1 = parseFloat(WeatherParameters.Longitude) + degreeDistance;
     var boundingBox = `${lat0},${lon0},${lat1},${lon1}`;
 
+    //// Get the current weather from the next closest station.
+    //var Url = "https://aviationweather.gov/api/data/dataserver?dataSource=metars&requestType=retrieve&format=xml&hoursBeforeNow=1";
+    //Url += "&boundingBox=" + boundingBox;
+    //Url += "&radialDistance=" + Distance.toString();
+    //Url += ";" + WeatherParameters.Longitude;
+    //Url += "," + WeatherParameters.Latitude;
+    ////Url = "cors/?u=" + encodeURIComponent(Url);
+
     // Get the current weather from the next closest station.
-    var Url = "https://aviationweather.gov/api/data/dataserver?dataSource=metars&requestType=retrieve&format=xml&hoursBeforeNow=1";
-    Url += "&boundingBox=" + boundingBox;
-    Url += "&radialDistance=" + Distance.toString();
-    Url += ";" + WeatherParameters.Longitude;
-    Url += "," + WeatherParameters.Latitude;
-    //Url = "cors/?u=" + encodeURIComponent(Url);
+    var Url = "https://aviationweather.gov/api/data/metar?format=xml&hours=1";
+    Url += "&bbox=" + boundingBox;
 
     // Load the xml file using ajax 
     $.ajaxCORS({
@@ -3163,8 +3167,11 @@ var GetWeatherHazards3 = function (WeatherParameters)
 
 var GetWeatherMetar = function (WeatherParameters)
 {
-    var Url = "https://aviationweather.gov/api/data/dataserver?dataSource=metars&requestType=retrieve&format=xml&hoursBeforeNow=3";
-    Url += "&stationString=" + WeatherParameters.StationId;
+    //var Url = "https://aviationweather.gov/api/data/dataserver?dataSource=metars&requestType=retrieve&format=xml&hoursBeforeNow=3";
+    //Url += "&stationString=" + WeatherParameters.StationId;
+    var Url = "https://aviationweather.gov/api/data/metar?format=xml&hours=3";
+    Url += "&ids=" + WeatherParameters.StationId;
+
     //Url += "," + (new Date().getTime()); // Prevents caching
     //Url = "https://crossorigin.me/" + Url; // Need to do this for Chrome and CORS
     //Url = "cors/?u=" + encodeURIComponent(Url);
@@ -9698,13 +9705,17 @@ var GetRegionalStations = function (WeatherParameters, Distance)
     var lon1 = parseFloat(WeatherParameters.Longitude) + degreeDistance;
     var boundingBox = `${lat0},${lon0},${lat1},${lon1}`;
 
-    var Url = "https://aviationweather.gov/api/data/dataserver?dataSource=metars&requestType=retrieve&format=xml&hoursBeforeNow=1";
-    Url += "&boundingBox=" + boundingBox;
-    Url += "&radialDistance=" + Distance.toString();
-    Url += ";" + WeatherParameters.Longitude;
-    Url += "," + WeatherParameters.Latitude;
-    //Url += "," + (new Date().getTime()); // Prevents caching
-    //Url = "cors/?u=" + encodeURIComponent(Url);
+    //var Url = "https://aviationweather.gov/api/data/dataserver?dataSource=metars&requestType=retrieve&format=xml&hoursBeforeNow=1";
+    //Url += "&boundingBox=" + boundingBox;
+    //Url += "&radialDistance=" + Distance.toString();
+    //Url += ";" + WeatherParameters.Longitude;
+    //Url += "," + WeatherParameters.Latitude;
+    ////Url += "," + (new Date().getTime()); // Prevents caching
+    ////Url = "cors/?u=" + encodeURIComponent(Url);
+
+    // Get the current weather from the next closest station.
+    var Url = "https://aviationweather.gov/api/data/metar?format=xml&hours=1";
+    Url += "&bbox=" + boundingBox;
 
     var Total = _MaximumRegionalStations;
     var Count = 0;
@@ -10561,7 +10572,8 @@ var ShowRegionalMap = function (WeatherParameters, TomorrowForecast1, TomorrowFo
             var maxLon = MinMaxLatLon.MaxLongitude - 1; // Prevent cities from being cut off on the right side.
             var minLon = MinMaxLatLon.MinLongitude;
 
-            var Url = "https://aviationweather.gov/api/data/dataserver?dataSource=metars&requestType=retrieve&format=xml&hoursBeforeNow=1&minLon=" + minLon + "&minLat=" + minLat + "&maxLon=" + maxLon + "&maxLat=" + maxLat;
+            //var Url = "https://aviationweather.gov/api/data/dataserver?dataSource=metars&requestType=retrieve&format=xml&hoursBeforeNow=1&minLon=" + minLon + "&minLat=" + minLat + "&maxLon=" + maxLon + "&maxLat=" + maxLat;
+            var Url = "https://aviationweather.gov/api/data/metar?format=xml&hours=1&bbox=" + minLat + "," + minLon + "," + maxLat + "," + maxLon;
 
             if (DontLoadGifs == true)
             {
@@ -10837,9 +10849,11 @@ var ShowRegionalMap = function (WeatherParameters, TomorrowForecast1, TomorrowFo
                         return;
                     }
 
-                    var Url = "https://aviationweather.gov/api/data/dataserver?dataSource=metars&requestType=retrieve&format=xml&hoursBeforeNow=3";
-                    Url += "&stationString=" + StationId;
+                    //var Url = "https://aviationweather.gov/api/data/dataserver?dataSource=metars&requestType=retrieve&format=xml&hoursBeforeNow=3";
+                    //Url += "&stationString=" + StationId;
                     //Url = "cors/?u=" + encodeURIComponent(Url);
+                    var Url = "https://aviationweather.gov/api/data/metar?format=xml&hours=3";
+                    Url += "&ids=" + StationId;
 
                     // Load the xml file using ajax 
                     $.ajaxCORS({
@@ -12563,7 +12577,7 @@ var Progress = function (e)
             ////DrawText(context, "Star4000 Large", "16pt", "#ffff00", 170, 80, "Conditions", 3);
             //DrawText(context, "Star4000 Large", "16pt", "#ffff00", 170, 55, "WeatherStar", 3);
             //DrawText(context, "Star4000 Large", "16pt", "#ffff00", 170, 80, "4000+", 3);
-            DrawTitleText(context, "WeatherStar", "4000+ 1.82                             ");
+            DrawTitleText(context, "WeatherStar", "4000+ 1.83                             ");
 
             // Draw a box for the progress.
             //context.fillStyle = "#000000";
